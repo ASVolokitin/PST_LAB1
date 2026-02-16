@@ -16,6 +16,16 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+    
+    testLogging {
+        events("passed", "skipped", "failed")
+        showStandardStreams = true
+        showExceptions = true
+        showCauses = true
+        showStackTraces = true
+        
+        exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+    }
 }
 kotlin {
     jvmToolchain(17)

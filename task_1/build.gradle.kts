@@ -35,8 +35,15 @@ tasks.jar {
 }
 
 tasks.test {
+    useJUnitPlatform()
+    
     testLogging {
-        exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.SHORT
-        showStackTraces = false
+        events("passed", "skipped", "failed")
+        showStandardStreams = true
+        showExceptions = true
+        showCauses = true
+        showStackTraces = true
+        
+        exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
     }
 }
