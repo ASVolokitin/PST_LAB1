@@ -37,6 +37,12 @@ class CalcArctanTest {
         assertTrue(result.isNaN(), "arctan(NaN) should be NaN")
     }
 
+    @Test
+    fun shouldReturnZeroForZeroInput() {
+        val result = arctan(0.0)
+        assertEquals(result, 0.0, "arctan(0) should be 0")
+    }
+
     @ParameterizedTest
     @ValueSource(doubles = [Double.NEGATIVE_INFINITY, Double.MIN_VALUE, Double.MAX_VALUE, Double.POSITIVE_INFINITY])
     fun shouldCalculateForHugeValues(x: Double) {
