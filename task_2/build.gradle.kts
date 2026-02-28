@@ -10,14 +10,13 @@ repositories {
     mavenCentral()
 }
 
-application {
-    mainClass.set("com.sashka.MainKt")
-}
-
 dependencies {
     implementation(kotlin("stdlib"))
     testImplementation(kotlin("test"))
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.7.0")
+    testImplementation(libs.kotest.property)
+    testImplementation(libs.coroutines.test)
+
 }
 
 tasks.test {
