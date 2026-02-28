@@ -22,7 +22,7 @@ class Bridge(
             else -> throw IllegalStateException("${person.displayName} is not near ${this.displayName}")
         }
         val crossBridgeCmd: WalkCommand = WalkCommand(person, destination)
-        crossBridgeCmd.execute()
+        crossBridgeCmd()
         println("${person.displayName} crossed a ${this.displayName}")
     }
 }

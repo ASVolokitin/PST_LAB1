@@ -28,7 +28,7 @@ class SitOnArmchairCommandTest {
 
     @Test
     fun shouldTakeFreeArmchair() {
-        command.execute()
+        command()
 
         assertEquals(PersonState.SITTING, person.currentState, "${person.displayName} should be sitting")
         assertEquals(ArmchairState.OCCUPIED, armchair.initialState, "${armchair.displayName} should be marked as occupied")
@@ -45,7 +45,7 @@ class SitOnArmchairCommandTest {
         )
 
         val heavyCommand = SitOnArmchairCommand(heavyPerson, lightArmchair)
-        heavyCommand.execute()
+        heavyCommand()
 
         assertEquals(PersonState.STANDING, heavyPerson.currentState, "${person.displayName} should be ${PersonState.STANDING}")
         assertEquals(MoodState.GRUMPY, heavyPerson.mood, "${person.displayName} should be ${MoodState.GRUMPY}")
@@ -60,7 +60,7 @@ class SitOnArmchairCommandTest {
         val cmd = SitOnArmchairCommand(balbesFaraway, armchair)
 
         val exception = assertThrows<IllegalStateException> {
-            cmd.execute()
+            cmd()
         }
         
         assertEquals(exception.message, "${balbesFaraway.displayName} is not near ${armchair.displayName}", "Should throw an exception")
@@ -72,11 +72,11 @@ class SitOnArmchairCommandTest {
         val secondPerson = Person("SecondBalbes")
         val occupiedArmchair = Armchair(ArmchairState.FREE, Location(0.0, 0.0))
 
-        SitOnArmchairCommand(firstPerson, occupiedArmchair).execute()
+        SitOnArmchairCommand(firstPerson, occupiedArmchair)()
         val secondCmd = SitOnArmchairCommand(secondPerson, occupiedArmchair)
 
         val exception = assertThrows<IllegalArgumentException> {
-            secondCmd.execute()
+            secondCmd()
         }
 
         assertEquals(exception.message, "${armchair.displayName} is already occupied by ${firstPerson.displayName}")
@@ -89,7 +89,7 @@ class SitOnArmchairCommandTest {
         val cmd = SitOnArmchairCommand(person, brokenArmchair)
 
         val exception = assertThrows<IllegalArgumentException> {
-            cmd.execute()
+            cmd()
         }
 
         assertEquals(exception.message, "${brokenArmchair.displayName} is already broken by ${brokenArmchair.seatLockOwner}", "Should throw an exception")

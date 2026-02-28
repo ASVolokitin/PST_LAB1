@@ -24,7 +24,7 @@ class ShoutOnPersonCommandTest {
     @Test
     fun shouldChangeMoodAfterShouting() {
         initiator.changeMood(MoodState.GRUMPY)
-        shoutOnPersonCmd.execute()
+        shoutOnPersonCmd()
         assertEquals(initiator.mood, MoodState.CALM)
         assertEquals(victim.mood, MoodState.GRUMPY)
     }
@@ -32,7 +32,7 @@ class ShoutOnPersonCommandTest {
     @Test
     fun shouldThrowExceptionAfterTryingToShoutWhenCalm() {
         val exception = assertThrows<IllegalStateException> {
-            shoutOnPersonCmd.execute()
+            shoutOnPersonCmd()
         }
         assertEquals(exception.message, "${initiator.displayName} is currently ${initiator.mood} and is not able to shout")
     }

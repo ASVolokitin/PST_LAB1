@@ -7,7 +7,6 @@ import com.sashka.models.Location
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.assertThrows
 
 class WalkCommandTest {
 
@@ -26,7 +25,7 @@ class WalkCommandTest {
 
     @Test
     fun shouldWalkToDestination() {
-        command.execute()
+        command()
 
         assertEquals(PersonState.STANDING, person.currentState, "${person.displayName} should be standing after walk")
         assertEquals(destination, person.currentLocation, "${person.displayName} should be at destination")

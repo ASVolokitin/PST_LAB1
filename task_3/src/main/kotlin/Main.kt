@@ -25,15 +25,15 @@ fun main() {
 
 
     var moveCommand = WalkCommand(jeltz, bridgeLocation)
-    moveCommand.execute()
+    moveCommand()
     bridge.crossBridge(jeltz)
 
     val destroyPlanetCmd = DestroyPlanetCommand(jeltz, Planet(PlanetState.INHABITED, Dimensions(1000.0, 1000.0, 1000.0)))
-    destroyPlanetCmd.execute()
+    destroyPlanetCmd()
 
     moveCommand = WalkCommand(jeltz, armchairLocation)
-    moveCommand.execute()
+    moveCommand()
 
     val sitCmd = SitOnArmchairCommand(jeltz, armchair)
-    sitCmd.execute()
+    sitCmd()
 }

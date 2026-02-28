@@ -37,7 +37,7 @@ class MainScenarioTest {
     @Test
     fun shouldExecuteFullScenario() {
         var moveCommand = WalkCommand(jeltz, bridgeLocation)
-        moveCommand.execute()
+        moveCommand()
 
         assertEquals(bridgeLocation, jeltz.currentLocation, "${jeltz.displayName} should be at bridge location")
         assertEquals(PersonState.STANDING, jeltz.currentState, "${jeltz.displayName} should be standing after walking")
@@ -48,19 +48,19 @@ class MainScenarioTest {
         assertEquals(PersonState.STANDING, jeltz.currentState, "${jeltz.displayName} should be standing after crossing bridge")
 
         val destroyPlanetCmd = DestroyPlanetCommand(jeltz, planet)
-        destroyPlanetCmd.execute()
+        destroyPlanetCmd()
 
         assertEquals(PlanetState.DESTROYED, planet.currentState, "Planet should be destroyed")
         assertEquals(MoodState.GRUMPY, jeltz.mood, "${jeltz.displayName} should be grumpy after destroying planet")
 
         moveCommand = WalkCommand(jeltz, armchairLocation)
-        moveCommand.execute()
+        moveCommand()
 
         assertEquals(armchairLocation, jeltz.currentLocation, "${jeltz.displayName} should be at armchair location")
         assertEquals(PersonState.STANDING, jeltz.currentState, "${jeltz.displayName} should be standing before sitting")
 
         val sitCmd = SitOnArmchairCommand(jeltz, armchair)
-        sitCmd.execute()
+        sitCmd()
 
         assertEquals(PersonState.SITTING, jeltz.currentState, "${jeltz.displayName} should be sitting")
         assertEquals(ArmchairState.OCCUPIED, armchair.initialState, "Armchair should be occupied")
@@ -71,7 +71,7 @@ class MainScenarioTest {
     @Test
     fun shouldHandleBridgeCrossingBothWays() {
         var moveCommand = WalkCommand(jeltz, bridgeLocation)
-        moveCommand.execute()
+        moveCommand()
 
         bridge.crossBridge(jeltz)
         val otherSideLocation = Location(bridgeLocation.x + bridge.dimensions.length, bridgeLocation.z + bridge.dimensions.width)
@@ -86,7 +86,7 @@ class MainScenarioTest {
         val sitCmd = SitOnArmchairCommand(jeltz, armchair)
 
         val exception = assertThrows<IllegalStateException>() {
-            sitCmd.execute()
+            sitCmd()
         }
         assertEquals(exception.message, "${jeltz.displayName} is not near ${armchair.displayName}")
     }
@@ -94,16 +94,16 @@ class MainScenarioTest {
     @Test
     fun shouldDestroyPlanetAndThenSit() {
         val destroyPlanetCmd = DestroyPlanetCommand(jeltz, planet)
-        destroyPlanetCmd.execute()
+        destroyPlanetCmd()
 
         assertEquals(PlanetState.DESTROYED, planet.currentState, "Planet should be destroyed")
         assertEquals(MoodState.GRUMPY, jeltz.mood, "${jeltz.displayName} should be grumpy")
 
         val moveCommand = WalkCommand(jeltz, armchairLocation)
-        moveCommand.execute()
+        moveCommand()
 
         val sitCmd = SitOnArmchairCommand(jeltz, armchair)
-        sitCmd.execute()
+        sitCmd()
 
         assertEquals(PersonState.SITTING, jeltz.currentState, "${jeltz.displayName} should be sitting after destroying planet")
         assertEquals(MoodState.GRUMPY, jeltz.mood, "${jeltz.displayName} should remain grumpy after sitting")
@@ -112,11 +112,11 @@ class MainScenarioTest {
     @Test
     fun shouldWalkToBridgeThenToArmchair() {
         var moveCommand = WalkCommand(jeltz, bridgeLocation)
-        moveCommand.execute()
+        moveCommand()
         assertEquals(bridgeLocation, jeltz.currentLocation, "${jeltz.displayName} should be at bridge")
 
         moveCommand = WalkCommand(jeltz, armchairLocation)
-        moveCommand.execute()
+        moveCommand()
         assertEquals(armchairLocation, jeltz.currentLocation, "${jeltz.displayName} should be at armchair")
     }
 }

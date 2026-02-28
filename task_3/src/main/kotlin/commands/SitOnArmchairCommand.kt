@@ -7,7 +7,7 @@ import com.sashka.states.ArmchairState
 import com.sashka.states.MoodState
 
 class SitOnArmchairCommand(private val person: Person, private val armchair: Armchair): Executable {
-    override fun execute() {
+    override fun invoke() {
         val result = armchair.takeASeat(person)
         if (result == ArmchairState.OCCUPIED) person.transitionTo(PersonState.SITTING)
         else if (result == ArmchairState.BROKEN) {

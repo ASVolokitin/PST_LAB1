@@ -23,7 +23,7 @@ class DestroyPlanetCommandTest {
     fun testPlanetShouldBeDestroyed() {
         val person = Person("Balabol")
         val destroyPlanetCmd = DestroyPlanetCommand(person, planet)
-        destroyPlanetCmd.execute()
+        destroyPlanetCmd()
         assert(planet.currentState == PlanetState.DESTROYED)
     }
 
@@ -32,7 +32,7 @@ class DestroyPlanetCommandTest {
         val person = Person(CharacterNames.JELTZ.name)
         assert(person.mood == MoodState.CALM)
         val destroyPlanetCmd = DestroyPlanetCommand(person, planet)
-        destroyPlanetCmd.execute()
+        destroyPlanetCmd()
         assert(planet.currentState == PlanetState.DESTROYED)
         assert(person.mood == MoodState.GRUMPY)
     }

@@ -19,7 +19,7 @@ class ArmchairTest {
         val cmd = SitOnArmchairCommand(sittingPerson, armchair)
 
         val exception = assertThrows<IllegalStateException> {
-            cmd.execute()
+            cmd()
         }
 
         assertEquals(exception.message, "${sittingPerson.displayName} should be standing before trying to take a seat", "Should throw an exception when person is not standing")

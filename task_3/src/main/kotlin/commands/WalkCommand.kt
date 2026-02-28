@@ -6,7 +6,7 @@ import com.sashka.models.Person
 
 class WalkCommand(private val person: Person, private val destination: Location): Executable {
 
-    override fun execute() {
+    override fun invoke() {
         person.transitionTo(PersonState.WALKING)
         println("${person.displayName} is walking from ${person.currentLocation} to $destination")
         person.currentLocation = destination
