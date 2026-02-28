@@ -1,3 +1,5 @@
+package com.sashka
+
 class BinomialHeap {
 
     private data class Node(

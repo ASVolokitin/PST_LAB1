@@ -1,3 +1,5 @@
+package com.sashka
+
 import java.util.Random
 
 
