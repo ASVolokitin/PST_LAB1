@@ -1,0 +1,5 @@
+[versions]
+kotest="6.1.4"
+
+[libraries]
+kotest-property = { module = "io.kotest:kotest-property", version.ref = "kotest" }

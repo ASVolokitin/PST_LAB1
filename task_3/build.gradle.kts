@@ -17,7 +17,6 @@ application {
 
 dependencies {
     testImplementation(kotlin("test"))
-    testImplementation("io.kotest:kotest-property:5.8.0")
 }
 
 tasks.test {
