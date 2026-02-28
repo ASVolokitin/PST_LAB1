@@ -1,34 +1,30 @@
 package utils
 
 import com.sashka.utils.CalcAbs.Companion.abs
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.double
+import io.kotest.property.checkAll
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.TestInstance
-import org.junit.jupiter.params.provider.Arguments
-import org.junit.jupiter.params.provider.MethodSource
-import kotlin.random.Random
-import kotlin.math.abs as kotlinAbs
+import kotlin.math.abs as refAbs
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CalcAbsTest {
 
     private val DELTA = 1e-14
 
-    fun randomDoubles() = generateSequence { Double.fromBits(Random.nextDouble().toLong()) }
-        .take(100)
-        .map { Arguments.of(it, kotlinAbs(it)) }
-        .toList()
-        .stream()
-
-    @ParameterizedTest
-    @MethodSource("randomDoubles")
-    fun shouldCalculateForRandomValues(x: Double, expected: Double) {
-        val result = abs(x)
-
-        assertEquals(expected, result, DELTA, "abs($x) should be $expected")
+    @Test
+    fun propertyTest() = runTest {
+        checkAll<Double>(Arb.double(min = 0.0)) { x ->
+            var result = abs(x)
+            var expected = refAbs(x)
+            assertEquals(expected, result, DELTA, "abs($x) should be $expected")
+        }
     }
 
     @Test

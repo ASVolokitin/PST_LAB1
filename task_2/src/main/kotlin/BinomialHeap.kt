@@ -36,7 +36,7 @@ class BinomialHeap {
         var first = a
         var second = b
 
-        if (second.top < first.top) {
+        if (shouldBeSwapped(first.top, second.top)) {
             first = b
             second = a
         }
@@ -54,4 +54,10 @@ class BinomialHeap {
         return first
     }
 
+    private fun shouldBeSwapped(top1: Double, top2: Double): Boolean {
+        if (top1.isNaN() && !top2.isNaN()) return true
+        if (top2.isNaN() && !top1.isNaN()) return false
+
+        return top2.compareTo(top1) < 0
+    }
 }

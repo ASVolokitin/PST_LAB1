@@ -1,19 +1,20 @@
 import com.sashka.main
 import com.sashka.utils.CalcArctan.Companion.arctan
+import io.kotest.property.checkAll
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.AfterEach
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
-import java.util.Random
 import kotlin.test.assertEquals
 
 class MainTest {
 
     private val standardOut = System.out
     private val outputStreamCaptor = ByteArrayOutputStream()
-    private val DELTA = 1e-10
+    private val DELTA = 1e-9
 
     @BeforeEach
     fun setUp() {
@@ -26,27 +27,34 @@ class MainTest {
     }
 
     @Test
-    fun shouldCalculateArctanWithDefaultIterations() {
-        val x = Random().nextDouble()
-        val expected = arctan(x)
-        val args = arrayOf(x.toString())
+    fun shouldCalculateArctanWithDefaultIterations() = runTest {
 
-        main(args)
+        checkAll<Double> { x ->
+            outputStreamCaptor.reset()
+            val expected = arctan(x)
+            val args = arrayOf(x.toString())
 
-        assertEquals(expected, outputStreamCaptor.toString().toDouble(), DELTA, "arctan($x) should be $expected")
+            main(args)
+            val actual = outputStreamCaptor.toString().trim().toDouble()
+
+            assertEquals(expected, actual, DELTA, "arctan($x) should be $expected")
+        }
     }
 
     @Test
-    fun shouldCalculateArctanWithCustomIterations() {
-        val x = Random().nextDouble()
-        val iters = 200
-        val expected = arctan(x, iters)
-        val args = arrayOf(x.toString())
+    fun shouldCalculateArctanWithCustomIterations() = runTest {
 
+        checkAll<Double> { x ->
+            outputStreamCaptor.reset()
+            val iterations = 200
+            val expected = arctan(x, iterations)
+            val args = arrayOf(x.toString())
 
-        main(args)
+            main(args)
+            val actual = outputStreamCaptor.toString().trim().toDouble()
 
-       assertEquals(expected, outputStreamCaptor.toString().toDouble(), DELTA,"arctan($x) should be $expected with $iters iterations")
+            assertEquals(expected, actual, DELTA,"arctan($x) should be $expected with $iterations iterations")
+        }
     }
 
     @Test

@@ -1,7 +1,12 @@
 import com.sashka.BinomialHeap
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.double
+import io.kotest.property.arbitrary.filter
+import io.kotest.property.arbitrary.list
+import io.kotest.property.checkAll
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
-import kotlin.random.Random
 
 class BinomialHeapTest {
 
@@ -14,34 +19,38 @@ class BinomialHeapTest {
     }
 
     @Test
-    fun shouldHandleSingleNode() {
-        val heap = BinomialHeap()
-        val value = Random.nextDouble()
+    fun shouldHandleSingleNode() = runTest {
 
-        heap.insert(value)
+        checkAll<Double> { value ->
+            val heap = BinomialHeap()
 
-        assertEquals(value, heap.top(), "Top should return the inserted value")
-        assertEquals(value, heap.extractTop(), "ExtractTop should return the inserted value")
-        assertNull(heap.top(), "Heap should be empty after extraction")
+            heap.insert(value)
+
+            assertEquals(value, heap.top(), "Top should return the inserted value")
+            assertEquals(value, heap.extractTop(), "ExtractTop should return the inserted value")
+            assertNull(heap.top(), "Heap should be empty after extraction")
+        }
     }
 
     @Test
-    fun shouldSortElements() {
-        val heap = BinomialHeap()
-        val inputValues = (1..100_000).map { Random.nextDouble() }.shuffled()
+    fun shouldSortElements() = runTest {
 
-        inputValues.forEach { heap.insert(it) }
+        checkAll (Arb.list(Arb.double(), range = 0..1000)) { inputValues ->
+            val heap = BinomialHeap()
 
-        val sortedInput = inputValues.sorted()
-        val extractedValues = mutableListOf<Double>()
+            inputValues.forEach { heap.insert(it) }
 
-        repeat(inputValues.size) {
-            val extracted = heap.extractTop()
-            assertNotNull(extracted)
-            extractedValues.add(extracted!!)
+            val sortedInput = inputValues.sorted()
+            val extractedValues = mutableListOf<Double>()
+
+            repeat(inputValues.size) {
+                val extracted = heap.extractTop()
+                assertNotNull(extracted)
+                extractedValues.add(extracted!!)
+            }
+
+            assertEquals(sortedInput, extractedValues, "Elements should be extracted in sorted order")
+            assertNull(heap.top(), "Heap should be empty after extracting all elements")
         }
-
-        assertEquals(sortedInput, extractedValues, "Elements should be extracted in sorted order")
-        assertNull(heap.top(), "Heap should be empty after extracting all elements")
     }
 }

@@ -15,7 +15,7 @@ class CalcSqrt {
                 lastRes = res
                 res = 0.5 * (res + x / res)
 
-                if (res == lastRes) break
+                if (res == lastRes || kotlin.math.abs(res - lastRes) <= res * 1e-15) break
             }
 
             return res

@@ -1,6 +1,8 @@
 package utils
 
 import com.sashka.utils.CalcArctan.Companion.arctan
+import io.kotest.property.checkAll
+import kotlinx.coroutines.test.runTest
 
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -12,7 +14,6 @@ import org.junit.jupiter.params.provider.ValueSource
 import java.util.stream.Stream
 import kotlin.math.abs
 import kotlin.math.atan
-import kotlin.random.Random
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CalcArctanTest {
@@ -75,23 +76,22 @@ class CalcArctanTest {
     }
 
     @Test
-    fun shouldBeOddFunction() {
-        val x = Math.random() * 2 - 1
-        val posResult = arctan(x)
-        val negResult = arctan(-x)
+    fun shouldBeOddFunction() = runTest {
+        checkAll<Double> { x ->
+            val posResult = arctan(x)
+            val negResult = arctan(-x)
 
-        assertEquals(posResult, -negResult, DELTA, "arctan should be odd function")
-    }
+            assertEquals(posResult, -negResult, DELTA, "arctan should be odd function")
+        }
+     }
 
     @Test
-    fun shouldCalculateRandomValue() {
-        val numberOfIterations: Int = 1_000_000
-        for (i in 1..numberOfIterations) {
-            val argument: Double = Double.fromBits(Random.nextLong())
-            val expectedValue: Double = atan(argument)
-            val actualValue: Double = arctan(argument)
-            assertEquals(expectedValue, actualValue, DELTA, "[TEST $i of $numberOfIterations] for x = $argument")
+    fun propertyTest() = runTest {
+
+        checkAll<Double> { x ->
+            val expectedValue: Double = atan(x)
+            val actualValue: Double = arctan(x)
+            assertEquals(expectedValue, actualValue, DELTA)
         }
-        println("[OK] Passed $numberOfIterations random tests")
     }
 }

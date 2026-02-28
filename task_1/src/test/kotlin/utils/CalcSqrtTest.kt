@@ -1,5 +1,9 @@
 package utils
 
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.double
+import io.kotest.property.checkAll
+import kotlinx.coroutines.test.runTest
 import com.sashka.utils.CalcSqrt.Companion.sqrt as mySqrt
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
@@ -8,30 +12,25 @@ import org.junit.jupiter.params.provider.ValueSource
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.TestInstance
-import org.junit.jupiter.params.provider.Arguments
-import org.junit.jupiter.params.provider.MethodSource
-import kotlin.math.atan
-import kotlin.random.Random
-import kotlin.math.sqrt as kotlinSqrt
+import kotlin.math.sqrt
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CalcSqrtTest {
 
-    private val DELTA = 1e-14
-
-    fun randomDoubles() = generateSequence { Double.fromBits(Random.nextDouble().toLong()) }
-        .take(100)
-        .map { Arguments.of(it, kotlinSqrt(it)) }
-        .toList()
-        .stream()
+    private val ACCURACY = 1e-14
 
 
-    @ParameterizedTest
-    @MethodSource("randomDoubles")
-    fun shouldCalculateForRandomValues(x: Double, expected: Double) {
-        val result = mySqrt(x)
+    @Test
+    fun propertyTest() = runTest {
 
-        assertEquals(expected, result, DELTA, "sqrt($x) should be $expected")
+        checkAll<Double>(Arb.double(min = 0.0)) { x ->
+            val expected = sqrt(x)
+            val result = mySqrt(x)
+            val delta = (if (!expected.isNaN()) expected * ACCURACY else ACCURACY)
+
+            assertEquals(expected, result, delta, "sqrt($x) should be $expected")
+        }
+
     }
 
     @ParameterizedTest
@@ -74,15 +73,20 @@ class CalcSqrtTest {
     fun shouldHandlePerfectSquares(x: Double, expected: Double) {
         val result = mySqrt(x)
 
-        assertEquals(expected, result, DELTA, "sqrt($x) of perfect square should be exact")
+        assertEquals(expected, result, ACCURACY, "sqrt($x) of perfect square should be exact")
     }
 
     @Test
-    fun shouldBeIdempotent() {
-        val x = Random.nextDouble()
-        val firstResult = mySqrt(x)
-        val secondResult = mySqrt(firstResult * firstResult)
+    fun shouldBeIdempotent() = runTest {
 
-        assertEquals(firstResult, secondResult, DELTA, "sqrt should be idempotent")
+        checkAll<Double>(Arb.double(min = 0.0)) { x ->
+            val firstResult = mySqrt(x)
+            val squared = firstResult * firstResult
+            if (squared.isInfinite() && !x.isInfinite()) return@checkAll
+            val secondResult = mySqrt(firstResult * firstResult)
+            val delta = if (firstResult == 0.0 || firstResult.isNaN()) ACCURACY else firstResult * ACCURACY
+
+            assertEquals(firstResult, secondResult, delta, "sqrt should be idempotent")
+        }
     }
 }
