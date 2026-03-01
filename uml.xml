@@ -1,0 +1,157 @@
+@startuml
+left to right direction
+
+package Commands {
+    class DestroyPlanetCommand {
+        +initiator: Person
+        +victim: Planet
+        +invoke(): Unit
+    }
+
+    interface Executable {
+        +{abstract} invoke(): Unit
+    }
+
+
+    class SitOnArmchairCommand {
+        +invoke(): Unit
+    }
+
+    class WalkCommand {
+        +invoke(): Unit
+    }
+    class ShoutOnPersonCommand {
+        +initiator: Person
+        +victim: Person
+        +invoke(): Unit
+    }
+
+    Executable <|.. DestroyPlanetCommand
+    Executable <|.. ShoutOnPersonCommand
+    Executable <|.. SitOnArmchairCommand
+    Executable <|.. WalkCommand
+
+}
+
+package States {
+    class PersonState {
+        +valueOf(value: String): PersonState
+        +values(): Array<PersonState>
+        +entries: EnumEntries<PersonState>
+    }
+    class ArmchairState {
+        +valueOf(value: String): ArmchairState
+        +values(): Array<ArmchairState>
+        +entries: EnumEntries<ArmchairState>
+    }
+
+    class BuildingState {
+        +valueOf(value: String): BuildingState
+        +values(): Array<BuildingState>
+        +entries: EnumEntries<BuildingState>
+    }
+
+    class MoodState {
+        +valueOf(value: String): MoodState
+        +values(): Array<MoodState>
+        +entries: EnumEntries<MoodState>
+    }
+
+    class PlanetState {
+        +valueOf(value: String): PlanetState
+        +values(): Array<PlanetState>
+        +entries: EnumEntries<PlanetState>
+    }
+}
+
+package Entities {
+    abstract class Entity<E : Enum<E>> {
+        +currentLocation: Location
+        +currentState: Enum
+        +dimensions: Dimensions
+        +displayName: String
+        +weight: Double
+        +transitionTo(newState: Enum, errorMessage: String): Unit
+    }
+
+    class Armchair {
+        +initialState: ArmchairState
+        +seatLockOwner: String
+        +takeASeat(person: Person): ArmchairState
+    }
+
+    class Bridge {
+        +crossBridge(person: Person): Unit
+    }
+
+    class Building {
+    }
+
+    class Planet {
+    }
+
+    class Building {
+    }
+
+    class Person {
+        +mood: MoodState
+        +changeMood(newMood: MoodState, errorMessage: String): Unit
+    }
+
+
+    Entity <|.. Armchair
+    Building <|.. Bridge
+    Entity <|.. Building
+    Entity <|.. Person
+    Entity <|.. Planet
+}
+
+package Utils {
+    class Dimensions {
+        +height: Double
+        +length: Double
+        +width: Double
+        +calculateValue(): Double
+        +component1(): Double
+        +component2(): Double
+        +component3(): Double
+        +copy(length: Double, width: Double, height: Double): Dimensions
+        +equals(other: Any): Boolean
+        +hashCode(): Int
+        +toString(): String
+    }
+
+    class Location {
+        +x: Double
+        +z: Double
+        +component1(): Double
+        +component2(): Double
+        +copy(x: Double, z: Double): Location
+        +equals(other: Any): Boolean
+        +hashCode(): Int
+        +toString(): String
+    }
+
+    class CharacterNames {
+        +value: String
+        +valueOf(value: String): CharacterNames
+        +values(): Array<CharacterNames>
+        +entries: EnumEntries<CharacterNames>
+    }
+}
+
+
+
+
+skinparam linetype ortho
+skinparam nodesep 60
+skinparam ArrowColor #b4662f
+skinparam ArrowFontColor #b4662f
+Person "moves" <--- WalkCommand
+Person "becomes grumpy" <--- ShoutOnPersonCommand
+ShoutOnPersonCommand "shouts, becomes calm" <--- Person
+
+Planet "gets destroyed" <--- DestroyPlanetCommand
+Armchair "gets occupied" <--- SitOnArmchairCommand
+
+@enduml
