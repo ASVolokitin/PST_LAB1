@@ -17,6 +17,7 @@ application {
 
 dependencies {
     testImplementation(kotlin("test"))
+    testImplementation(libs.kotlin.uml)
 }
 
 tasks.test {
@@ -37,14 +38,14 @@ kotlin {
     jvmToolchain(17)
 }
 
-tasks {
-    generateUml {
-//        target.set(projectDir.parentFile.resolve("src/main"))
-        classTree {
-            target; "src/main/"
-        }
-    }
-}
+//tasks {
+//    generateUml {
+////        target.set(projectDir.parentFile.resolve("src/main"))
+//        classTree {
+////            target; "src/main/"
+//        }
+//    }
+//}
 
 tasks.jar {
     manifest {
