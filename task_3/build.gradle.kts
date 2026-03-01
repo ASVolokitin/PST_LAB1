@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm") version "2.2.20"
+    kotlin("jvm")
     id("application")
     id("com.xcporter.metaview") version "0.0.5"
 }
