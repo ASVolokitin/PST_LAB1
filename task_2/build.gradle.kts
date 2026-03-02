@@ -35,6 +35,10 @@ kotlin {
     jvmToolchain(17)
 }
 
+application {
+    mainClass.set("com.sashka.MainKt")
+}
+
 tasks.jar {
     manifest {
         attributes["Main-Class"] = "com.sashka.MainKt"
