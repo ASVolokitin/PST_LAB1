@@ -2,9 +2,9 @@ package org.example.utils
 
 import java.math.BigDecimal
 
-val MAX_ITER_AMOUNT = 100_000_000
-val ACCURACY_MARGIN = 5
-val DEFAULT_ACCURACY = BigDecimal(1e-15)
+const val MAX_ITER_AMOUNT = 100_000_000
+const val ACCURACY_MARGIN = 7
+val DEFAULT_ACCURACY = BigDecimal(1e-14)
 
 enum class MathConstants(val value: BigDecimal) {
     MY_PI(BigDecimal("3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679")),
