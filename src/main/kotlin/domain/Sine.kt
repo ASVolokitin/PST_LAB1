@@ -6,27 +6,38 @@ import org.example.utils.MathConstants
 import java.math.BigDecimal
 import java.math.RoundingMode
 
-class Sine: MathFunction() {
+class Sine : MathFunction() {
+
     override fun invoke(x: BigDecimal, e: BigDecimal): BigDecimal {
 
-        val reducedX = x.remainder(MathConstants.MY_PI.value.multiply(BigDecimal(2)))
+        val pi = MathConstants.MY_PI.value
+        val twoPi = pi * BigDecimal(2)
+        val halfPi = pi.divide(BigDecimal(2))
 
-        var term = reducedX
+        val k = x.divide(twoPi, 0, RoundingMode.DOWN)
+        var r = x - (k * twoPi)
+
+        if (r > pi) r -= twoPi
+
+        if (r > halfPi) r = pi - r
+        if (r < -halfPi) r = -pi - r
+
+        val r2 = r * r
+
+        var term = r
         var result = term
-        var iterCounter = 1
+        var n = 1
 
         while (term.abs() > e) {
-            term = term.multiply(-reducedX.multiply(reducedX))
-                .divide(
-                    BigDecimal(2 * iterCounter)
-                        .multiply(BigDecimal(2 * iterCounter + 1)),
-                    e.scale() + ACCURACY_MARGIN,
-                    RoundingMode.HALF_EVEN
-                )
-            result += term
-            iterCounter++
 
-            if (iterCounter > MAX_ITER_AMOUNT) break
+            val denom = BigDecimal((2 * n) * (2 * n + 1))
+
+            term *= -r2.divide(denom, e.scale() + ACCURACY_MARGIN, RoundingMode.HALF_EVEN)
+
+            result = result.add(term)
+
+            n++
+            if (n > MAX_ITER_AMOUNT) break
         }
 
         return result
