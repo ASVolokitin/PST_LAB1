@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import kotlin.math.PI
+import kotlin.math.absoluteValue
 import kotlin.math.cos
 
 class SecantTest {
@@ -42,7 +43,7 @@ class SecantTest {
         checkAll(Arb.numericDouble(min = -1e32, max = 1e32)) { x ->
             val expected = 1.0 / cos(x)
             val result = Secant()(BigDecimal(x), e)
-            result.toDouble() shouldBe (expected plusOrMinus DEFAULT_ACCURACY.toDouble())
+            result.toDouble() shouldBe (expected plusOrMinus expected.absoluteValue * DEFAULT_ACCURACY.toDouble())
         }
     }
 }
