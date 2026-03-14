@@ -5,8 +5,8 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 
 class Logarithm(
-    private val base: BigDecimal,
-) : MathFunction() {
+    private val base: BigDecimal, functionName: String = "log$base(x)",
+) : MathFunction(functionName) {
 
     override fun invoke(x: BigDecimal, e: BigDecimal): BigDecimal {
         val numerator = NatLog()(x, e)

@@ -4,7 +4,7 @@ import org.example.utils.ACCURACY_MARGIN
 import java.math.BigDecimal
 import java.math.RoundingMode
 
-class Secant : MathFunction() {
+class Secant(functionName: String = "sec(x)") : MathFunction(functionName) {
     override fun invoke(x: BigDecimal, e: BigDecimal): BigDecimal {
         return BigDecimal(1)
             .divide(Cosine()(x, e),

@@ -3,7 +3,7 @@ package org.example.domain
 import java.math.BigDecimal
 import java.math.MathContext
 
-class EquationSystem : MathFunction() {
+class EquationSystem(functionName: String = "equation_system(x)") : MathFunction(functionName) {
 
     val sin = Sine()
     val sec = Secant()

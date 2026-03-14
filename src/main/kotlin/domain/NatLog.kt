@@ -6,7 +6,7 @@ import org.example.utils.MathConstants
 import java.math.BigDecimal
 import java.math.RoundingMode
 
-class NatLog: MathFunction() {
+class NatLog(functionName: String = "ln(x)") : MathFunction(functionName) {
 
     override fun invoke(x: BigDecimal, e: BigDecimal): BigDecimal {
         if (x.compareTo(BigDecimal.ZERO) <= 0) {
