@@ -21,19 +21,19 @@ class LogarithmTest {
         val e = BigDecimal(DEFAULT_ACCURACY.toString())
 
         assertThrows<ArithmeticException>("Failed on case: Arg Zero") {
-            Logarithm()(BigDecimal("10.0"), BigDecimal.ZERO, e)
+            Logarithm(BigDecimal("10.0"))(BigDecimal.ZERO, e)
         }
 
         assertThrows<ArithmeticException>("Failed on case: Arg Negative") {
-            Logarithm()(BigDecimal("10.0"), BigDecimal("-5.0"), e)
+            Logarithm(BigDecimal("10.0"))(BigDecimal("-5.0"), e)
         }
 
         assertThrows<ArithmeticException>("Failed on case: Base Zero") {
-            Logarithm()(BigDecimal.ZERO, BigDecimal("10.0"), e)
+            Logarithm(BigDecimal.ZERO)(BigDecimal("10.0"), e)
         }
 
         assertThrows<ArithmeticException>("Failed on case: Base One") {
-            Logarithm()(BigDecimal.ONE, BigDecimal("10.0"), e)
+            Logarithm(BigDecimal.ONE)(BigDecimal("10.0"), e)
         }
     }
 
@@ -46,7 +46,7 @@ class LogarithmTest {
 
         checkAll(baseArb, argArb) { base, arg ->
             val expected = log(arg, base)
-            val result = Logarithm()(BigDecimal(base), BigDecimal(arg), e)
+            val result = Logarithm(BigDecimal(base))(BigDecimal(arg), e)
             result.toDouble() shouldBe (expected plusOrMinus DEFAULT_ACCURACY.toDouble())
         }
     }

@@ -4,9 +4,12 @@ import org.example.utils.ACCURACY_MARGIN
 import java.math.BigDecimal
 import java.math.RoundingMode
 
-class Logarithm: MathFunction() {
-    operator fun invoke(base: BigDecimal, arg: BigDecimal, e: BigDecimal): BigDecimal {
-        val numerator = NatLog()(arg, e)
+class Logarithm(
+    private val base: BigDecimal,
+) : MathFunction() {
+
+    override fun invoke(x: BigDecimal, e: BigDecimal): BigDecimal {
+        val numerator = NatLog()(x, e)
         val denominator = NatLog()(base, e)
 
         return numerator.divide(
