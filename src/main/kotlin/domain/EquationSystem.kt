@@ -3,17 +3,19 @@ package org.example.domain
 import java.math.BigDecimal
 import java.math.MathContext
 
-class EquationSystem(functionName: String = "equation_system(x)") : MathFunction(functionName) {
+class EquationSystem(
+    private val sin: Sine,
+    private val sec: Secant,
+    private val log2: Logarithm,
+    private val log3: Logarithm,
+    private val log5: Logarithm,
+    private val log10: Logarithm,
+    functionName: String = "equation_system(x)"
 
-    val sin = Sine()
-    val sec = Secant()
-    val log2 = Logarithm(BigDecimal(2))
-    val log3 = Logarithm(BigDecimal(3))
-    val log5 = Logarithm(BigDecimal(5))
-    val log10 = Logarithm(BigDecimal(10))
+) : MathFunction(functionName) {
 
     override fun invoke(x: BigDecimal, e: BigDecimal): BigDecimal {
-        val mc = MathContext.DECIMAL128
+        val mc = MathContext.DECIMAL64
 
         if (x.compareTo(BigDecimal.ZERO) <= 0) {
             return (sec(x, e) + sin(x, e)).pow(3)
@@ -22,9 +24,12 @@ class EquationSystem(functionName: String = "equation_system(x)") : MathFunction
                 throw ArithmeticException("SOD: x could not be equal to 1")
             }
 
-            val numerator = (log3(x, e).divide(log2(x, e), mc)).pow(2) - (log2(x, e) + log10(x, e))
-            val denominator = log10(x, e) + log5(x, e)
-            return log2(x, e).multiply(numerator.divide(denominator, mc))
+            val lx10 = log10(x, e)
+            val lx2 = log2(x, e)
+
+            val numerator = (log3(x, e).divide(lx2, mc)).pow(2) - (lx2 + lx10)
+            val denominator = lx10 + log5(x, e)
+            return lx2.multiply(numerator.divide(denominator, mc))
         }
     }
 }

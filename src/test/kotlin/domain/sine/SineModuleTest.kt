@@ -1,4 +1,4 @@
-package domain
+package domain.sine
 
 import io.kotest.matchers.doubles.plusOrMinus
 import io.kotest.matchers.shouldBe
@@ -8,13 +8,26 @@ import io.kotest.property.checkAll
 import kotlinx.coroutines.test.runTest
 import org.example.domain.Sine
 import org.example.utils.DEFAULT_ACCURACY
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
+import kotlin.collections.iterator
 import kotlin.math.PI
 import kotlin.math.sin
 
-class SineTest {
+@Tag("unit")
+@DisplayName("Sine module tests")
+class SineModuleTest {
+
+    private lateinit var sine: Sine
+
+    @BeforeEach
+    fun init() {
+        sine = Sine()
+    }
 
     @Test
     fun edgeCasesTest() {
@@ -30,8 +43,8 @@ class SineTest {
 
         for ((name, x) in cases) {
             val expected = sin(x)
-            val result = Sine()(BigDecimal(x)).toDouble()
-            assertEquals(expected, result, DEFAULT_ACCURACY.toDouble(), "Failed on case: $name")
+            val result = sine(BigDecimal(x)).toDouble()
+            Assertions.assertEquals(expected, result, DEFAULT_ACCURACY.toDouble(), "Failed on case: $name")
         }
     }
 
@@ -39,7 +52,7 @@ class SineTest {
     fun propertyTest() = runTest {
         checkAll(Arb.numericDouble(min = -1e32, max = 1e32)) { x ->
             val expected = sin(x)
-            val result = Sine()(BigDecimal(x))
+            val result = sine(BigDecimal(x))
             result.toDouble() shouldBe (expected plusOrMinus DEFAULT_ACCURACY.toDouble())
         }
     }
