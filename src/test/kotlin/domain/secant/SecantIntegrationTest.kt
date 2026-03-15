@@ -17,7 +17,9 @@ import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.mockito.Mockito
+import org.mockito.Mockito.doReturn
 import org.mockito.Mockito.spy
+import org.mockito.Mockito.verify
 import org.mockito.Spy
 import java.math.BigDecimal
 import kotlin.math.PI
@@ -48,7 +50,7 @@ class SecantIntegrationTest {
     @Test
     fun shouldCallCosineFunction() {
         val result: BigDecimal = secant(SAMPLE_ARGUMENT, SAMPLE_ACCURACY)
-        Mockito.verify(cosineSpy, Mockito.atLeastOnce()).invoke(
+        verify(cosineSpy, Mockito.atLeastOnce()).invoke(
             SAMPLE_ARGUMENT,
             SAMPLE_ACCURACY
         )
@@ -78,7 +80,7 @@ class SecantIntegrationTest {
         )
         for ((name, x) in undefinedCases) {
             val bigDecimalX = BigDecimal(x)
-            Mockito.doReturn(BigDecimal.ZERO).`when`(cosineSpy).invoke(bigDecimalX, DEFAULT_ACCURACY)
+            doReturn(BigDecimal.ZERO).`when`(cosineSpy).invoke(bigDecimalX, DEFAULT_ACCURACY)
             assertThrows<ArithmeticException>("Failed on case: $name") {secant(bigDecimalX)}
         }
     }

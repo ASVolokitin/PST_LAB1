@@ -9,7 +9,8 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvFileSource
 import org.mockito.Mock
-import org.mockito.Mockito
+import org.mockito.Mockito.doReturn
+import org.mockito.Mockito.verify
 import org.mockito.junit.jupiter.MockitoExtension
 import java.math.BigDecimal
 import kotlin.test.assertEquals
@@ -38,13 +39,13 @@ class LogarithmUnitTest {
         val expectedLogValue = BigDecimal(expectedLogValueString)
         val accuracy = DEFAULT_ACCURACY
 
-        Mockito.doReturn(mockedLnX).`when`(natLogMock).invoke(x, accuracy)
-        Mockito.doReturn(mockedLnBase).`when`(natLogMock).invoke(BASE, accuracy)
+        doReturn(mockedLnX).`when`(natLogMock).invoke(x, accuracy)
+        doReturn(mockedLnBase).`when`(natLogMock).invoke(BASE, accuracy)
 
         val actualResult = logarithm(x, accuracy)
 
-        Mockito.verify(natLogMock).invoke(x, accuracy)
-        Mockito.verify(natLogMock).invoke(BASE, accuracy)
+        verify(natLogMock).invoke(x, accuracy)
+        verify(natLogMock).invoke(BASE, accuracy)
         assertEquals(expectedLogValue.toDouble(), actualResult.toDouble(), DEFAULT_ACCURACY.toDouble())
     }
 }

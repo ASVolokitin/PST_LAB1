@@ -14,9 +14,9 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito
 import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.spy
+import org.mockito.Mockito.verify
 import org.mockito.Spy
 import java.math.BigDecimal
 import kotlin.math.abs
@@ -47,11 +47,11 @@ class LogarithmIntegrationTest {
     @Test
     fun shouldCallNatLogFunction() {
         val result: BigDecimal = logarithm(SAMPLE_ARGUMENT, SAMPLE_ACCURACY)
-        Mockito.verify(natLogSpy, atLeastOnce()).invoke(
+        verify(natLogSpy, atLeastOnce()).invoke(
             SAMPLE_ARGUMENT,
             SAMPLE_ACCURACY
         )
-        Mockito.verify(natLogSpy, atLeastOnce()).invoke(
+        verify(natLogSpy, atLeastOnce()).invoke(
             BASE,
             SAMPLE_ACCURACY
         )
