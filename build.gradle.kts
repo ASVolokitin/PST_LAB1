@@ -10,6 +10,7 @@ repositories {
 }
 
 dependencies {
+    runtimeOnly("io.kotest:kotest-runner-junit5:6.1.7")
     implementation("org.knowm.xchart:xchart:3.8.8")
     testImplementation(kotlin("test"))
     testImplementation("io.kotest:kotest-property:6.1.4")
