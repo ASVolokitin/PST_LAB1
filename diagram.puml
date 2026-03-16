@@ -1,0 +1,68 @@
+@startuml
+skinparam linetype ortho
+
+package "org.example.domain" {
+
+    interface ICalculatable {
+        + invoke(x: BigDecimal, e: BigDecimal): BigDecimal
+        + invoke(x: BigDecimal): BigDecimal
+    }
+
+    class MathFunction {
+        + functionName: String
+        + invoke(x: BigDecimal, e: BigDecimal): BigDecimal
+        + invoke(x: BigDecimal): BigDecimal
+    }
+
+    class Sine {
+        + invoke(x: BigDecimal, e: BigDecimal): BigDecimal
+    }
+
+    class Cosine {
+        - sine: Sine
+        + invoke(x: BigDecimal, e: BigDecimal): BigDecimal
+    }
+
+    class Secant {
+        - cosine: Cosine
+        + invoke(x: BigDecimal, e: BigDecimal): BigDecimal
+    }
+
+    class NatLog {
+        + invoke(x: BigDecimal, e: BigDecimal): BigDecimal
+    }
+
+    class Logarithm {
+        - base: BigDecimal
+        - natLog: NatLog
+        + invoke(x: BigDecimal, e: BigDecimal): BigDecimal
+    }
+
+    class EquationSystem {
+        - sin: Sine
+        - sec: Secant
+        - log2: Logarithm
+        - log3: Logarithm
+        - log5: Logarithm
+        - log10: Logarithm
+        + invoke(x: BigDecimal, e: BigDecimal): BigDecimal
+    }
+
+    ICalculatable <|.. MathFunction
+    MathFunction <|-- Sine
+    MathFunction <|-- Cosine
+    MathFunction <|-- Secant
+    MathFunction <|-- NatLog
+    MathFunction <|-- Logarithm
+    MathFunction <|-- EquationSystem
+
+    Cosine o-- Sine
+    Secant o-- Cosine
+    Logarithm o-- NatLog
+
+    EquationSystem o-- Sine
+    EquationSystem o-- Secant
+    EquationSystem o-- Logarithm
+
+}
+@enduml
