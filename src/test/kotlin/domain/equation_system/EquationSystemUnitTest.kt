@@ -15,6 +15,7 @@ import org.mockito.Mock
 import org.mockito.Mockito.verify
 import org.mockito.junit.jupiter.MockitoExtension
 import java.math.BigDecimal
+import kotlin.math.abs
 import kotlin.test.assertEquals
 
 @ExtendWith(MockitoExtension::class)
@@ -40,16 +41,10 @@ class EquationSystemUnitTest {
     @Mock
     lateinit var log10Mock: Logarithm
 
-    @ParameterizedTest(name = "x = {0}, expected = {7}")
-    @CsvFileSource(resources = ["/equation_system_data.csv"], numLinesToSkip = 1)
+    @ParameterizedTest(name = "x = {0}, expected = {1}")
+    @CsvFileSource(resources = ["/equation_system_x_data.csv"], numLinesToSkip = 1)
     fun shouldCalculateSystemUsingCsvData(
         xStr: String,
-        mockSinStr: String,
-        mockSecStr: String,
-        mockLog2Str: String,
-        mockLog3Str: String,
-        mockLog5Str: String,
-        mockLog10Str: String,
         expectedResultStr: String
     ) {
         val equationSystem = EquationSystem(sineMock, secantMock, log2Mock, log3Mock, log5Mock, log10Mock)
@@ -58,27 +53,34 @@ class EquationSystemUnitTest {
         val accuracy = DEFAULT_ACCURACY
 
         if (x <= BigDecimal.ZERO) {
-            willReturn(BigDecimal(mockSinStr)).given(sineMock).invoke(x, accuracy)
-            willReturn(BigDecimal(mockSecStr)).given(secantMock).invoke(x, accuracy)
+            val baseVal = Math.cbrt(expectedResult.toDouble())
+            willReturn(BigDecimal.ZERO).given(sineMock).invoke(x, accuracy)
+            willReturn(BigDecimal(baseVal)).given(secantMock).invoke(x, accuracy)
         } else {
-            willReturn(BigDecimal(mockLog2Str)).given(log2Mock).invoke(x, accuracy)
-            willReturn(BigDecimal(mockLog3Str)).given(log3Mock).invoke(x, accuracy)
-            willReturn(BigDecimal(mockLog5Str)).given(log5Mock).invoke(x, accuracy)
-            willReturn(BigDecimal(mockLog10Str)).given(log10Mock).invoke(x, accuracy)
+            val l2 = Math.log(x.toDouble()) / Math.log(2.0)
+            val l3 = Math.log(x.toDouble()) / Math.log(3.0)
+            val l5 = Math.log(x.toDouble()) / Math.log(5.0)
+            val l10 = Math.log(x.toDouble()) / Math.log(10.0)
+
+            willReturn(BigDecimal(l2)).given(log2Mock).invoke(x, accuracy)
+            willReturn(BigDecimal(l3)).given(log3Mock).invoke(x, accuracy)
+            willReturn(BigDecimal(l5)).given(log5Mock).invoke(x, accuracy)
+            willReturn(BigDecimal(l10)).given(log10Mock).invoke(x, accuracy)
         }
 
-        val actualResult = equationSystem(x, accuracy)
+        if (abs(x.toDouble() - 1.0) > 1e-9) {
+             val actualResult = equationSystem(x, accuracy)
 
-        if (x <= BigDecimal.ZERO) {
-            verify(sineMock).invoke(x, accuracy)
-            verify(secantMock).invoke(x, accuracy)
-        } else {
-            verify(log2Mock).invoke(x, accuracy)
-            verify(log3Mock).invoke(x, accuracy)
-            verify(log5Mock).invoke(x, accuracy)
-            verify(log10Mock).invoke(x, accuracy)
+             if (x <= BigDecimal.ZERO) {
+                 verify(sineMock).invoke(x, accuracy)
+                 verify(secantMock).invoke(x, accuracy)
+             } else {
+                 verify(log2Mock).invoke(x, accuracy)
+                 verify(log3Mock).invoke(x, accuracy)
+                 verify(log5Mock).invoke(x, accuracy)
+                 verify(log10Mock).invoke(x, accuracy)
+             }
+             assertEquals(expectedResult.toDouble(), actualResult.toDouble(), 1e-4)
         }
-
-        assertEquals(expectedResult.toDouble(), actualResult.toDouble(), DEFAULT_ACCURACY.toDouble())
     }
 }

@@ -23,25 +23,22 @@ class CosineUnitTest {
     @Mock
     lateinit var sineMock: Sine
 
-    @ParameterizedTest(name = "x = {0}, expected cos(x) = {2}")
-    @CsvFileSource(resources = ["/cosine_data.csv"], numLinesToSkip = 1)
-
+    @ParameterizedTest(name = "x = {0}, expected cos(x) = {1}")
+    @CsvFileSource(resources = ["/cos_x_data.csv"], numLinesToSkip = 1)
     fun shouldCalculateCosineUsingCsvData(
         xStr: String,
-        mockSineStr: String,
         expectedCosineStr: String
     ) {
-
         val cosine = Cosine(sineMock)
         val x = BigDecimal(xStr)
-        val mockedSineValue = BigDecimal(mockSineStr)
         val expectedCosineValue = BigDecimal(expectedCosineStr)
         val accuracy = DEFAULT_ACCURACY
 
         val expectedSineArgument = MathConstants.MY_PI.value.divide(BigDecimal(2)) - x
-        willReturn(mockedSineValue).given(sineMock).invoke(expectedSineArgument, accuracy)
+
+        willReturn(expectedCosineValue).given(sineMock).invoke(expectedSineArgument, accuracy)
         val actualResult = cosine(x, accuracy)
 
-        assertEquals(expectedCosineValue, actualResult)
+        assertEquals(expectedCosineValue.toDouble(), actualResult.toDouble(), DEFAULT_ACCURACY.toDouble())
     }
 }

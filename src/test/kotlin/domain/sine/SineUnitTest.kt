@@ -14,7 +14,7 @@ import kotlin.test.assertEquals
 class SineUnitTest {
 
     @ParameterizedTest(name = "x = {0}, expected sin(x) = {1}")
-    @CsvFileSource(resources = ["/sine_data.csv"], numLinesToSkip = 1)
+    @CsvFileSource(resources = ["/sin_x_data.csv"], numLinesToSkip = 1)
     fun shouldCalculateSineUsingCsvData(
         xStr: String,
         expectedSineStr: String

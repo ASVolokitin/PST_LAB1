@@ -6,8 +6,6 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 import java.nio.file.Files
 import java.nio.file.Paths
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 class CsvWriter(
     private val function: MathFunction,
@@ -16,16 +14,15 @@ class CsvWriter(
     private val steps: Int,
     private val accuracy: BigDecimal
 ) {
-    private val outputDir = Paths.get("csv_output").apply { Files.createDirectories(this) }
+    private val outputDir = Paths.get("src/test/resources").apply { Files.createDirectories(this) }
 
     fun write(): File {
-        val name = function.functionName
-        val fileName = "${name}_${LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy_HH:mm:ss"))}.csv"
+        val name = function.functionName.replace("(", "_").replace(")", "")
+        val fileName = "${name}_data.csv"
         val file = outputDir.resolve(fileName).toFile()
         file.bufferedWriter().use { writer ->
-            writer.appendLine("X,Y")
-            val scale = 20
-            val dx = (x2 - x1) / (BigDecimal(steps - 1))
+            writer.appendLine("x,expected_${name}")
+            val dx = if (steps > 1) (x2 - x1) / (BigDecimal(steps - 1)) else BigDecimal.ZERO
             var x = x1
             for (i in 0 until steps) {
                 val y = function(x, accuracy)

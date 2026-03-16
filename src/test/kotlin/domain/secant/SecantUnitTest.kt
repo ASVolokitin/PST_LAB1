@@ -22,26 +22,25 @@ class SecantUnitTest {
     @Mock
     lateinit var cosineMock: Cosine
 
-    @ParameterizedTest(name = "x = {0}, expected sec(x) = {2}")
-    @CsvFileSource(resources = ["/secant_data.csv"], numLinesToSkip = 1)
+    @ParameterizedTest(name = "x = {0}, expected sec(x) = {1}")
+    @CsvFileSource(resources = ["/sec_x_data.csv"], numLinesToSkip = 1)
     fun shouldCalculateSecantUsingCsvData(
         xString: String,
-        mockedCosineValueString: String,
         expectedSecantValueString: String
     ) {
         val secant = Secant(cosineMock)
         val x = BigDecimal(xString)
-        val mockedCosineValue = BigDecimal(mockedCosineValueString)
         val accuracy = DEFAULT_ACCURACY
 
         if (expectedSecantValueString == "Infinity") {
             willReturn(BigDecimal.ZERO).given(cosineMock).invoke(x, accuracy)
             assertThrows<ArithmeticException> {secant(x, accuracy)}
         } else {
-            val expectedSecantValue = 1.0 / mockedCosineValue.toDouble()
+            val expectedSecantValue = BigDecimal(expectedSecantValueString)
+            val mockedCosineValue = BigDecimal.ONE.divide(expectedSecantValue, accuracy.scale(), java.math.RoundingMode.HALF_EVEN)
             willReturn(mockedCosineValue).given(cosineMock).invoke(x, accuracy)
             val actualResult = secant(x, accuracy)
-            assertEquals(expectedSecantValue, actualResult.toDouble(), DEFAULT_ACCURACY.toDouble())
+            assertEquals(expectedSecantValue.toDouble(), actualResult.toDouble(), DEFAULT_ACCURACY.toDouble())
         }
     }
 }

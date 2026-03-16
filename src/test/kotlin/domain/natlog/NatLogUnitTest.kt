@@ -14,7 +14,7 @@ import kotlin.test.assertEquals
 class NatLogUnitTest {
 
     @ParameterizedTest(name = "x = {0}, expected ln(x) = {1}")
-    @CsvFileSource(resources = ["/natlog_data.csv"], numLinesToSkip = 1)
+    @CsvFileSource(resources = ["/ln_x_data.csv"], numLinesToSkip = 1)
     fun shouldCalculateNatLogUsingCsvData(
         xStr: String,
         expectedLnStr: String
