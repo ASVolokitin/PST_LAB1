@@ -2,12 +2,11 @@ package org.example.hh
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import org.example.hh.auth.AuthSession
 import org.example.hh.driver.WebDriverFactory
 import org.example.hh.pages.MainPage
-import org.example.hh.utils.ConfigReader
-import org.openqa.selenium.Cookie
 import org.openqa.selenium.WebDriver
-
+  
 class MainPageTest : FunSpec() {
     private lateinit var driver: WebDriver
     private lateinit var mainPage: MainPage
@@ -15,15 +14,10 @@ class MainPageTest : FunSpec() {
     init {
         beforeTest {
             driver = WebDriverFactory.create()
-
-            driver.get("https://hh.ru/robots.txt")
-
-            val cookie = Cookie.Builder("hhtoken", ConfigReader.getProperty("hhtoken"))
-                .domain(".hh.ru")
-                .path("/")
-                .isSecure(true)
-                .build()
-            driver.manage().addCookie(cookie)
+            runCatching { AuthSession.authorizeByHhToken(driver) }
+                .getOrElse { error ->
+                    throw AssertionError("Cannot authorize by hhtoken cookie in setup: ${error.message}", error)
+                }
 
             mainPage = MainPage(driver)
         }
@@ -40,4 +34,5 @@ class MainPageTest : FunSpec() {
             }
         }
     }
+
 }
