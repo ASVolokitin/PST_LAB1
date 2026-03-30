@@ -5,8 +5,10 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.openqa.selenium.Cookie
+import org.openqa.selenium.PageLoadStrategy
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.chrome.ChromeDriver
+import org.openqa.selenium.chrome.ChromeOptions
 import java.time.Duration
 
 class MainPageTest {
@@ -15,26 +17,26 @@ class MainPageTest {
 
     @BeforeEach
     fun setup() {
-        driver = ChromeDriver()
+        val options = ChromeOptions().apply {
+            setPageLoadStrategy(PageLoadStrategy.EAGER)
+        }
+        driver = ChromeDriver(options)
         driver.manage().timeouts().implicitlyWait(Duration.ofMillis(300))
 
-        driver.manage().deleteAllCookies()
-        driver.get("https://hh.ru/")
-        println("Got")
+        driver.get("https://hh.ru/robots.txt")
 
         val cookie = Cookie.Builder("hhtoken", ConfigReader.getProperty("hhtoken"))
             .domain(".hh.ru")
             .path("/")
             .build()
         driver.manage().addCookie(cookie)
-        println("Added")
 
-        driver.get("https://hh.ru/")
+        driver.navigate().to("https://hh.ru/")
         driver.manage().window().maximize()
     }
 
     @Test
-    fun searchFor() {
+    fun shouldBeLoggedIn() {
         Thread.sleep(2000)
     }
 
