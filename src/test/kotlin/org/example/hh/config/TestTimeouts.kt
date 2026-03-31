@@ -9,4 +9,5 @@ object TestTimeouts {
     val LOGGED_IN_WAIT: Duration = Duration.ofSeconds(10)
     val SEARCH_RESULTS_WAIT: Duration = Duration.ofSeconds(10)
     val VACANCY_PAGE_WAIT: Duration = Duration.ofSeconds(10)
+    val FAVORITE_VACANCIES_PAGE_WAIT: Duration = Duration.ofSeconds(10)
 }

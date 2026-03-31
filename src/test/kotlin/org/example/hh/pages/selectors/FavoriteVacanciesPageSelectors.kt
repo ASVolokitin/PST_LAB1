@@ -1,12 +1,10 @@
 package org.example.hh.pages.selectors
 
-object SearchResultsPageSelectors {
+object FavoriteVacanciesPageSelectors {
     const val MAIN_CONTENT_QA = "main-content"
-    const val VACANCY_SERP_ITEM_QA = "vacancy-serp__vacancy"
-
     val MAIN_CONTENT_XPATH = SelectorXPath.byDataQa(MAIN_CONTENT_QA)
 
     fun vacancyLinkByIdXPath(vacancyId: String): String {
-        return "${SelectorXPath.byDataQa(VACANCY_SERP_ITEM_QA)}//a[contains(@href, '/vacancy/$vacancyId')]"
+        return "//a[contains(@href, '/vacancy/$vacancyId')]"
     }
 }
