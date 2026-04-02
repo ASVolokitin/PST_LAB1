@@ -4,8 +4,11 @@ import org.example.hh.config.TestTimeouts
 import org.example.hh.pages.selectors.SearchResultsPageSelectors
 import org.openqa.selenium.By
 import org.openqa.selenium.ElementClickInterceptedException
+import org.openqa.selenium.ElementNotInteractableException
 import org.openqa.selenium.JavascriptExecutor
+import org.openqa.selenium.StaleElementReferenceException
 import org.openqa.selenium.WebDriver
+import org.openqa.selenium.WebElement
 import org.openqa.selenium.support.ui.ExpectedConditions
 import org.openqa.selenium.support.ui.WebDriverWait
 import java.net.URLEncoder
@@ -144,10 +147,7 @@ class SearchResultsPage(private val driver: WebDriver) {
     fun submitAdvancedSearch(timeout: Duration = TestTimeouts.SEARCH_RESULTS_WAIT): SearchResultsPage {
         val beforeUrl = driver.currentUrl.orEmpty()
         val submitBy = By.xpath(SearchResultsPageSelectors.ADVANCED_SUBMIT_XPATH)
-        val submitButton = WebDriverWait(driver, timeout)
-            .until(ExpectedConditions.elementToBeClickable(submitBy))
-
-        submitButton.click()
+        clickWithFallback(submitBy, timeout)
 
         WebDriverWait(driver, timeout).until {
             val currentUrl = driver.currentUrl.orEmpty()
@@ -182,6 +182,40 @@ class SearchResultsPage(private val driver: WebDriver) {
             ?: error("Vacancy link for id=$vacancyId does not have href")
         driver.navigate().to(href)
         return VacancyPage(driver)
+    }
+
+    private fun clickWithFallback(by: By, timeout: Duration) {
+        val wait = WebDriverWait(driver, timeout)
+        val element = wait.until<WebElement> { drv ->
+            drv.findElement(by)
+        }
+        scrollToCenter(element)
+
+        wait.until { drv ->
+            drv.findElements(by).any { it.isDisplayed && it.isEnabled }
+        }
+
+        try {
+            driver.findElement(by).click()
+        } catch (_: ElementClickInterceptedException) {
+            clickViaJs(by)
+        } catch (_: ElementNotInteractableException) {
+            clickViaJs(by)
+        } catch (_: StaleElementReferenceException) {
+            clickViaJs(by)
+        }
+    }
+
+    private fun scrollToCenter(element: WebElement) {
+        (driver as JavascriptExecutor).executeScript(
+            "arguments[0].scrollIntoView({block: 'center', inline: 'nearest'});",
+            element,
+        )
+    }
+
+    private fun clickViaJs(by: By) {
+        val current = driver.findElement(by)
+        (driver as JavascriptExecutor).executeScript("arguments[0].click();", current)
     }
 
     private companion object {
