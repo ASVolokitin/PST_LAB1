@@ -2,7 +2,6 @@ package org.example.hh
 
 import io.kotest.matchers.shouldBe
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.core.test.TestCaseOrder
 import org.example.hh.auth.AuthSession
 import org.example.hh.config.VacancyFixture
 import org.example.hh.driver.WebDriverFactory

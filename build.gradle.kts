@@ -19,6 +19,17 @@ tasks.test {
     useJUnitPlatform()
     systemProperty("kotest.framework.classpath.scanning.autoscan.disable", "true")
 
+    val selectedBrowser = (project.findProperty("browser") as String?)
+        ?: System.getProperty("browser")
+        ?: System.getenv("BROWSER")
+
+    if (!selectedBrowser.isNullOrBlank()) {
+        systemProperty("browser", selectedBrowser)
+        doFirst {
+            logger.lifecycle("Selenium browser for tests: $selectedBrowser")
+        }
+    }
+
     testLogging {
         events("passed", "skipped", "failed")
         showStandardStreams = true

@@ -4,6 +4,7 @@ import org.example.hh.config.TestTimeouts
 import org.example.hh.pages.selectors.MainPageSelectors
 import org.example.hh.pages.selectors.SelectorXPath
 import org.openqa.selenium.By
+import org.openqa.selenium.TimeoutException
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.support.ui.WebDriverWait
 import java.time.Duration
@@ -40,9 +41,12 @@ class MainPage(private val driver: WebDriver) {
         if (driver.windowHandles.size > beforeHandles.size) {
             val newHandle = driver.windowHandles.first { !beforeHandles.contains(it) }
             driver.switchTo().window(newHandle)
-            val openedUrl = driver.currentUrl.orEmpty()
-            driver.close()
-            driver.switchTo().window(baseHandle)
+            val openedUrl = waitForStableUrl(timeout)
+            try {
+                driver.close()
+            } finally {
+                driver.switchTo().window(baseHandle)
+            }
             return openedUrl
         }
 
@@ -79,7 +83,24 @@ class MainPage(private val driver: WebDriver) {
         sectionElement?.click() ?: error("Main menu item '$sectionQa' is not available in header.")
     }
 
+    private fun waitForStableUrl(timeout: Duration): String {
+        return try {
+            WebDriverWait(driver, timeout).until {
+                !isTransientUrl(driver.currentUrl.orEmpty())
+            }
+            driver.currentUrl.orEmpty()
+        } catch (_: TimeoutException) {
+            driver.currentUrl.orEmpty()
+        }
+    }
+
+    private fun isTransientUrl(url: String): Boolean {
+        return url.isBlank() || url == ABOUT_BLANK || url == ABOUT_NEW_TAB
+    }
+
     private companion object {
         const val BASE_URL = "https://hh.ru/"
+        const val ABOUT_BLANK = "about:blank"
+        const val ABOUT_NEW_TAB = "about:newtab"
     }
 }
