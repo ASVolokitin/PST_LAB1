@@ -3,7 +3,10 @@ package org.example.hh.pages
 import org.example.hh.config.TestTimeouts
 import org.example.hh.pages.selectors.SearchResultsPageSelectors
 import org.openqa.selenium.By
+import org.openqa.selenium.ElementClickInterceptedException
+import org.openqa.selenium.JavascriptExecutor
 import org.openqa.selenium.WebDriver
+import org.openqa.selenium.support.ui.ExpectedConditions
 import org.openqa.selenium.support.ui.WebDriverWait
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
@@ -29,6 +32,37 @@ class SearchResultsPage(private val driver: WebDriver) {
         val vacancyLinkXPath = SearchResultsPageSelectors.vacancyLinkByIdXPath(vacancyId)
         return driver.findElements(By.xpath(vacancyLinkXPath)).isNotEmpty()
     }
+
+    fun hasQuickFilters(): Boolean {
+        return driver.findElements(By.xpath(SearchResultsPageSelectors.QUICK_FILTERS_XPATH)).isNotEmpty()
+    }
+
+    fun applyQuickFilter(
+        filterName: String,
+        timeout: Duration = TestTimeouts.SEARCH_RESULTS_WAIT,
+    ): SearchResultsPage {
+        val beforeUrl = driver.currentUrl.orEmpty()
+        val quickFilterXPath = SearchResultsPageSelectors.quickFilterXPath(filterName)
+        val quickFilterBy = By.xpath(quickFilterXPath)
+        val quickFilterLink = WebDriverWait(driver, timeout)
+            .until(ExpectedConditions.elementToBeClickable(quickFilterBy))
+
+        try {
+            quickFilterLink.click()
+        } catch (_: ElementClickInterceptedException) {
+            (driver as JavascriptExecutor).executeScript("arguments[0].click();", quickFilterLink)
+        }
+
+        WebDriverWait(driver, timeout).until {
+            driver.currentUrl.orEmpty() != beforeUrl &&
+                driver.currentUrl.orEmpty().contains("/vacancies/$filterName") &&
+                driver.findElements(By.xpath(SearchResultsPageSelectors.MAIN_CONTENT_XPATH)).isNotEmpty()
+        }
+
+        return this
+    }
+
+    fun currentUrl(): String = driver.currentUrl.orEmpty()
 
     fun openVacancy(vacancyId: String): VacancyPage {
         val vacancyLinkXPath = SearchResultsPageSelectors.vacancyLinkByIdXPath(vacancyId)
