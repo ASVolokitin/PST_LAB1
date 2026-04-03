@@ -1,0 +1,40 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Cоискатель" as Guest
+
+rectangle "Система hh.ru" {
+  usecase "UC1\nАвторизация" as UC1
+  usecase "UC2\nПоиск вакансии" as UC2
+  usecase "UC3\nДобавление вакансии\nв избранное" as UC3
+  usecase "UC4\nУдаление вакансии\nиз избранного" as UC4
+  usecase "UC5\nПереход в «Резюме и профиль»" as UC5
+  usecase "UC6\nПереход в «Отклики»" as UC6
+  usecase "UC7\nПереход в «Сервисы»" as UC7
+  usecase "UC8\nПереход в «Карьера»" as UC8
+  usecase "UC9\nОткрытие раздела «Помощь»" as UC9
+  usecase "UC10\nПрименение быстрого\nфильтра поиска" as UC10
+  usecase "UC11\nПрименение фильтра\nспециализации\n(расширенный поиск)" as UC11
+  usecase "UC12\nПрименение фильтров\nрегиона и зарплаты\n(расширенный поиск)" as UC12
+}
+
+Guest --> UC1
+Guest --> UC10
+Guest --> UC11
+Guest --> UC12
+
+Guest --> UC3
+Guest --> UC4
+Guest --> UC5
+Guest --> UC6
+Guest --> UC7
+Guest --> UC8
+Guest --> UC9
+
+UC10 ..> UC2 : <<extend>>
+UC11 ..> UC2 : <<extend>>
+UC12 ..> UC2 : <<exnted>>
+
+
+@enduml
