@@ -1,0 +1,41 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Анонимный\nсоискатель" as Guest
+actor "Авторизованный\nсоискатель" as Auth
+
+rectangle "Система hh.ru" {
+  usecase "UC1\nАвторизоваться в Системе" as UC1
+  usecase "UC2\nИскать вакансию\nв Системе" as UC2
+  usecase "UC3\nСохранить вакансию\nв избранное" as UC3
+  usecase "UC4\nУдалить вакансию\nиз избранного" as UC4
+  usecase "UC5\nПерейти в раздел\n«Резюме и профиль»" as UC5
+  usecase "UC6\nПерейти в раздел\n«Отклики»" as UC6
+  usecase "UC7\nПерейти в раздел\n«Сервисы»" as UC7
+  usecase "UC8\nПерейти в раздел\n«Карьера»" as UC8
+  usecase "UC9\nОткрыть раздел\n«Помощь»" as UC9
+  usecase "UC10\nПрименить быстрый\nфильтр поиска" as UC10
+  usecase "UC11\nПрименить фильтр\nспециализации\n(расширенный поиск)" as UC11
+  usecase "UC12\nПрименить фильтры\nрегиона и зарплаты\n(расширенный поиск)" as UC12
+}
+
+Guest --> UC1
+Guest --> UC2
+Auth --> UC2
+Auth --> UC3
+Auth --> UC4
+Auth --> UC5
+Auth --> UC6
+Auth --> UC7
+Auth --> UC8
+Auth --> UC9
+Guest --> UC10
+Guest --> UC11
+Guest --> UC12
+
+UC10 ..> UC2 : <<include>>
+UC11 ..> UC2 : <<include>>
+UC12 ..> UC2 : <<include>>
+
+@enduml
