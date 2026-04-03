@@ -12,14 +12,12 @@ object WebDriverFactory {
 
     enum class Browser {
         CHROME,
-        FIREFOX,
-
-        ;
+        FIREFOX;
 
         companion object {
             fun from(raw: String?): Browser {
                 return when (raw?.trim()?.lowercase()) {
-                    "firefox", "ff", "firefix" -> FIREFOX
+                    "firefox" -> FIREFOX
                     else -> CHROME
                 }
             }

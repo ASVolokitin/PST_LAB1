@@ -17,7 +17,7 @@ import java.time.Duration
 class MainPage(private val driver: WebDriver) {
 
     fun open(): MainPage {
-        navigateToWithRetry(BASE_URL)
+        navigateToOnce(BASE_URL)
         return this
     }
 
@@ -60,17 +60,8 @@ class MainPage(private val driver: WebDriver) {
     }
 
     fun openHelpMenu(timeout: Duration = TestTimeouts.LOGGED_IN_WAIT): MainPage {
-        repeat(HELP_OPEN_ATTEMPTS) { attempt ->
-            clickMainMenuItem(MainPageSelectors.HELP_QA)
-            try {
-                WebDriverWait(driver, timeout).until { isHelpMenuOpened() }
-                return this
-            } catch (error: TimeoutException) {
-                if (attempt == HELP_OPEN_ATTEMPTS - 1) {
-                    throw error
-                }
-            }
-        }
+        clickMainMenuItem(MainPageSelectors.HELP_QA)
+        WebDriverWait(driver, timeout).until { isHelpMenuOpened() }
         return this
     }
 
@@ -118,21 +109,15 @@ class MainPage(private val driver: WebDriver) {
         }
     }
 
-    private fun navigateToWithRetry(url: String) {
-        repeat(NAVIGATION_ATTEMPTS) { attempt ->
-            try {
-                driver.navigate().to(url)
+    private fun navigateToOnce(url: String) {
+        try {
+            driver.navigate().to(url)
+        } catch (error: TimeoutException) {
+            if (isOnHhDomain(driver.currentUrl.orEmpty())) {
                 return
-            } catch (error: TimeoutException) {
-                if (isOnHhDomain(driver.currentUrl.orEmpty())) {
-                    return
-                }
-
-                runCatching { (driver as JavascriptExecutor).executeScript("window.stop();") }
-                if (attempt == NAVIGATION_ATTEMPTS - 1) {
-                    throw error
-                }
             }
+            runCatching { (driver as JavascriptExecutor).executeScript("window.stop();") }
+            throw error
         }
     }
 
@@ -166,7 +151,5 @@ class MainPage(private val driver: WebDriver) {
         const val BASE_URL = "https://hh.ru/"
         const val ABOUT_BLANK = "about:blank"
         const val ABOUT_NEW_TAB = "about:newtab"
-        const val NAVIGATION_ATTEMPTS = 2
-        const val HELP_OPEN_ATTEMPTS = 2
     }
 }
