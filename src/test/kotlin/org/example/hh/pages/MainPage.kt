@@ -17,7 +17,7 @@ import java.time.Duration
 class MainPage(private val driver: WebDriver) {
 
     fun open(): MainPage {
-        navigateToOnce(BASE_URL)
+        navigateTo(BASE_URL)
         return this
     }
 
@@ -109,7 +109,7 @@ class MainPage(private val driver: WebDriver) {
         }
     }
 
-    private fun navigateToOnce(url: String) {
+    private fun navigateTo(url: String) {
         try {
             driver.navigate().to(url)
         } catch (error: TimeoutException) {
